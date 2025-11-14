@@ -21,10 +21,21 @@ if uploaded_file:
 
     # Monthly Revenue Trend
     st.subheader("Monthly Revenue Trend")
-    df['Month'] = df['Order Date'].dt.to_period('M')
-    monthly = df.groupby('Month')['Revenue'].sum().reset_index()
-    fig1 = px.line(monthly, x='Month', y='Revenue', title="Monthly Revenue Trend")
-    st.plotly_chart(fig1)
+
+# Convert month to datetime or string (Fixes Period serialization)
+    df['Month'] = df['Order Date'].dt.to_period('M').astype(str)
+
+    monthly = df.groupby('Month', as_index=False)['Revenue'].sum()
+    fig1 = px.line(
+    monthly,
+    x='Month',
+    y='Revenue',
+    title="Monthly Revenue Trend",
+    markers=True
+)
+
+    st.plotly_chart(fig1, use_container_width=True)
+
 
     # Sales Forecast
     st.subheader("Next 30 Days Sales Forecast")
@@ -39,3 +50,7 @@ if uploaded_file:
 
     # Recommendation
     st.success("💡 Recommendation: Focus on top 3 products for next month!")
+   
+
+
+   # To Run(streamlit run app/streamlit_app.py)
