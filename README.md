@@ -9,7 +9,10 @@ A data-driven application designed to help businesses analyze sales, customers, 
 * Identify top products and customers
 * RFM (Recency, Frequency, Monetary) customer segmentation
 * K-Means clustering for customer groups
+* **Market Basket Analysis (Frequently Bought Together)**
+* **Customer Churn Prediction (Random Forest)**
 * Generate insights and visualizations
+* **Time-Series Forecasting with Prophet (with Cross-Validation)**
 
 ## 📂 Project Structure
 
@@ -22,8 +25,8 @@ AI_Based_Business_Analyzer/
 │   └── processed/
 |        └──cleaned_sales.csv
 ├── app/
-│   └── streamlit_app.py
-│
+│   ├── streamlit_app.py
+│   └── utils.py
 ├──figures
 │
 ├── notebooks/
@@ -92,9 +95,9 @@ streamlit run app/streamlit_app.py
 
 ## 💡 Future Enhancements
 
-* Add forecasting (ARIMA/Prophet)
-* Add interactive dashboards
+* Add interactive dashboards with more tabs
 * Add export options (PDF/Excel)
+* Connect to real SQL/Cloud Databases for live data
 
 ## 👤 Author
 
