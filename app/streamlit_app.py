@@ -28,9 +28,29 @@ if not check_password():
 
 st.title("📊 AI-Powered Sales Insight Analyzer")
 
-uploaded_file = st.file_uploader("Upload Sales CSV", type=["csv"])
-if uploaded_file:
-    df = pd.read_csv(uploaded_file)
+st.sidebar.header("📥 Data Source")
+data_source = st.sidebar.radio("Choose Data Source:", ["CSV Upload", "Live SQL Database"])
+
+df = None
+if data_source == "CSV Upload":
+    uploaded_file = st.sidebar.file_uploader("Upload Sales CSV", type=["csv"])
+    if uploaded_file:
+        df = pd.read_csv(uploaded_file)
+elif data_source == "Live SQL Database":
+    st.sidebar.subheader("Database Connection")
+    st.sidebar.info("Example: sqlite:///my_database.db")
+    db_uri = st.sidebar.text_input("Database URI (SQLAlchemy format)")
+    table_name = st.sidebar.text_input("Table Name")
+    if st.sidebar.button("Connect & Load") and db_uri and table_name:
+        try:
+            from sqlalchemy import create_engine
+            engine = create_engine(db_uri)
+            df = pd.read_sql_table(table_name, engine)
+            st.sidebar.success("✅ Connected successfully!")
+        except Exception as e:
+            st.sidebar.error(f"Connection Error: {e}")
+
+if df is not None:
     
     st.sidebar.header("🗺️ Map Your Columns")
     st.sidebar.write("Please map your dataset columns so the dashboard knows what to analyze.")
@@ -68,7 +88,7 @@ if uploaded_file:
         st.error("❌ Could not parse the selected Order Date. Please ensure it is a valid date column.")
         st.stop()
     
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(["🤖 Automatic AI Data Profiling", "📊 Business Overview", "📈 Forecasting", "👥 Customer Segments", "📥 Data Export"])
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["🤖 Automatic AI Data Profiling", "📊 Business Overview", "📈 Forecasting", "👥 Customer Segments", "📥 Data Export", "💬 Chat with AI"])
 
     with tab1:
         st.subheader("🤖 Universal Automatic Analysis")
@@ -194,5 +214,36 @@ if uploaded_file:
                 )
    
 
+
+    with tab6:
+        st.subheader("💬 Chat with Your Data (LLM)")
+        st.write("Ask questions about your data in plain English and let the AI generate answers and charts!")
+        
+        api_key = st.text_input("Enter your OpenAI API Key (starts with sk-...):", type="password")
+        if api_key:
+            try:
+                from openai import OpenAI
+                
+                client = OpenAI(api_key=api_key)
+                
+                query = st.text_input("What would you like to know about this data?")
+                if st.button("Ask AI") and query:
+                    with st.spinner("The AI is analyzing the data..."):
+                        # Create a summary context of the dataframe
+                        context = f"Data columns: {', '.join(df.columns.tolist())}\n"
+                        context += f"Data summary stats:\n{df.describe(include='all').to_string()}\n"
+                        
+                        response = client.chat.completions.create(
+                            model="gpt-3.5-turbo",
+                            messages=[
+                                {"role": "system", "content": "You are a helpful data analyst. Use the provided dataset context to answer the user's question clearly and concisely."},
+                                {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
+                            ]
+                        )
+                        st.write(response.choices[0].message.content)
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
+        else:
+            st.info("Please enter an OpenAI API key above to unlock this feature.")
 
    # To Run(streamlit run app/streamlit_app.py)
