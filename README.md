@@ -13,6 +13,10 @@ A data-driven application designed to help businesses analyze sales, customers, 
 * **Customer Churn Prediction (Random Forest)**
 * Generate insights and visualizations
 * **Time-Series Forecasting with Prophet (with Cross-Validation)**
+* **Interactive Dashboard with Tabs**
+* **Data Export Options (CSV Downloads)**
+* **Secure Login Authentication**
+* **In-Memory Data Caching for Fast Performance**
 
 ## 📂 Project Structure
 
@@ -95,9 +99,9 @@ streamlit run app/streamlit_app.py
 
 ## 💡 Future Enhancements
 
-* Add interactive dashboards with more tabs
-* Add export options (PDF/Excel)
 * Connect to real SQL/Cloud Databases for live data
+* Containerize application using Docker
+* Add automated CI/CD pipeline for testing and deployment
 
 ## 👤 Author
 
